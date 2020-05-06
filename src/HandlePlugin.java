@@ -1,3 +1,4 @@
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -7,6 +8,7 @@ import java.nio.channels.FileChannel;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import com.ibm.statistics.plugin.StatsUtil;
 
 public class HandlePlugin {
     static void doInstall(String r_home, String extFolderName) throws Exception {
@@ -20,6 +22,9 @@ public class HandlePlugin {
         String scriptDir = m_extensionFolder;
 
         ParseJSON indexJSON = new ParseJSON(jsonPath, HandleType.INSTALL);
+
+        versionCheck(indexJSON);
+
         File rHomeDir = new File(r_home);
         String rHomePath = rHomeDir.getAbsolutePath();
         CheckREnv rEnv = new CheckREnv(rHomePath, indexJSON.getRVersion());
@@ -79,6 +84,8 @@ public class HandlePlugin {
         String jsonPath = pluginSrcBasePath + ConfigUtil.getIndexFile();
 
         ParseJSON indexJSON = new ParseJSON(jsonPath, HandleType.UNINSTALL);
+
+        versionCheck(indexJSON);
 
         String statsPkgName = indexJSON.getStatsPkgName();
         String rInvokeLibName = indexJSON.getRInvokeLibName();
@@ -387,6 +394,16 @@ public class HandlePlugin {
             return homeList.getFirst();
         } else {
             return "";
+        }
+    }
+
+    private static void versionCheck(ParseJSON indexJSON) throws Exception {
+        String statsMajorVersion = StatsUtil.getStatisticsVersion().substring(0, 2);
+        String supportedVersion = indexJSON.getSupportedProductVersion();
+
+        if (!statsMajorVersion.equals(supportedVersion)) {
+            throw new ConfigException(MessageFormat.format(
+                    ConfigUtil.getConfigResPropertiesValue("VERSION_CHECK_ERROR"), supportedVersion));
         }
     }
 

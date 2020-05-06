@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class ParseJSON {
 
@@ -44,6 +46,10 @@ class ParseJSON {
         return m_RInvokeLibName;
     }
 
+    String getSupportedProductVersion() {
+        return mSupportedProductVersion;
+    }
+
 
     ///////////////////private method///////////////////////////
     private void getJsonParseMethod(FileInputStream inputStream, HandlePlugin.HandleType type) throws Exception {
@@ -74,12 +80,24 @@ class ParseJSON {
         m_PkgName =  method.invoke(obj, m_PkgNameKey).toString();
         m_RInvokeLibName = method.invoke(obj, m_RInvokeLibNameKey).toString();
 
+        mSupportedProductVersion = parseProductVersion();
+
+    }
+
+    private String parseProductVersion() {
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(m_PkgName);
+
+        String version = m.replaceAll("").trim();
+        return version.substring(0, 2);
     }
 
     ///////////////////data member///////////////////////////
     private String m_PkgName = null;
     private String m_RVersion = null;
     private String m_RInvokeLibName = null;
+    private String mSupportedProductVersion = null;
 
     private final String m_PkgNameKey = "name";
     private final String m_RVersionKey = "rVersion";

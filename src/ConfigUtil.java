@@ -154,7 +154,6 @@ class ConfigUtil {
         try {
             Properties prop = new Properties();
             String statsOutPutLang = StatsUtil.getSetting("OLANG");
-            statsOutPutLang = "English";
             StringBuilder resFile = new StringBuilder("ConfigResBundle");
             switch (statsOutPutLang) {
                 case "French":

@@ -40,7 +40,7 @@ public class STATS_R36_CONFIGURATION {
                 Object[][] data = {{e.getMessage()}};
                 Object[] rowLabels = {""};
                 Object[] colLabels = {""};
-                StatsUtil.startProcedure("Messages");
+                StatsUtil.startProcedure(this.getClass().getName().replace("_", " "));
                 PivotTable warningsTable = new PivotTable(data, rowLabels, colLabels);
                 warningsTable.setTitle("Warnings ");
                 warningsTable.setHideColDimLabel(true);
